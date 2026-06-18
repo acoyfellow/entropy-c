@@ -44,7 +44,13 @@ Public background:
 
 ## Leading concept: NYC Traffic Prism
 
+[![Grounded whiteboard concept for entropy c](mockups/whiteboard-base.jpg)](mockups/whiteboard.html)
+
+**[Open the grounded concept board](mockups/whiteboard.html)** to see which parts are requirements, candidates, unmade decisions, and explicitly out of scope.
+
 A compact transparent shadow box contains several prisms, reflective pieces, or translucent elements moved by quiet motors or magnetic actuators. A camera observes the changing optical field. Motion, light, and environmental sensors provide independent measurements.
+
+The whiteboard is a direction, not a specification. The enclosure geometry, five-object arrangement, magnetic actuation, and 300 mm scale are design hypotheses. The staged architecture, privacy boundary, fail-safe behavior, and non-production warning are project requirements.
 
 Live traffic data can influence the installation's color, rhythm, or motor cadence. It should be treated as **public context or an additional mixed input**, not as secret entropy: network traffic can be observed or influenced by other parties.
 

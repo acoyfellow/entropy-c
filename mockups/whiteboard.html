@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>entropy c — grounded whiteboard</title>
+  <style>
+    :root { --ink:#17202b; --muted:#5c6875; --orange:#f6821f; --green:#16845b; --paper:#f5f0e5; }
+    * { box-sizing:border-box; }
+    body { margin:0; color:var(--ink); background:#d8d4ca; font:15px/1.45 Inter, ui-sans-serif, system-ui, sans-serif; }
+    main { width:min(1500px, calc(100% - 32px)); margin:24px auto; background:var(--paper); box-shadow:0 18px 60px #20202035; border:12px solid #c8c4b9; border-radius:8px; }
+    header { display:flex; justify-content:space-between; gap:30px; padding:30px 36px 22px; border-bottom:2px solid #b8b2a5; }
+    h1 { margin:0; font:700 46px/1 Georgia,serif; letter-spacing:-.04em; }
+    header p { margin:8px 0 0; max-width:760px; color:var(--muted); font-size:17px; }
+    .stamp { align-self:flex-start; border:3px solid var(--orange); color:var(--orange); padding:8px 13px; transform:rotate(2deg); font-weight:850; letter-spacing:.08em; text-transform:uppercase; }
+    .board { display:grid; grid-template-columns:minmax(0,1.45fr) minmax(360px,.8fr); min-height:700px; }
+    .concept { position:relative; overflow:hidden; border-right:2px solid #b8b2a5; background:#eee7d9; }
+    .concept img { width:100%; height:100%; object-fit:cover; object-position:30% center; filter:contrast(1.04) saturate(.72); }
+    .label { position:absolute; background:#fffdf7ed; border:2px solid var(--ink); padding:9px 12px; border-radius:4px; max-width:220px; font-weight:750; box-shadow:3px 3px 0 #17202b20; }
+    .label::after { content:""; position:absolute; height:2px; background:var(--orange); transform-origin:left; }
+    .l1 { left:5%; top:17%; }.l1::after{width:110px;left:100%;top:60%;transform:rotate(14deg)}
+    .l2 { left:8%; bottom:15%; }.l2::after{width:120px;left:100%;top:35%;transform:rotate(-18deg)}
+    .l3 { right:5%; top:31%; }.l3::after{width:100px;right:100%;top:60%;transform:rotate(165deg)}
+    .l4 { right:7%; bottom:12%; }.l4::after{width:100px;right:100%;top:30%;transform:rotate(195deg)}
+    aside { padding:28px; background-image:linear-gradient(#2b34400c 1px,transparent 1px); background-size:100% 28px; }
+    section { margin-bottom:27px; }
+    h2 { display:inline; margin:0; font:800 19px/1.2 ui-monospace,SFMono-Regular,monospace; background:linear-gradient(transparent 55%,#f6821f50 55%); }
+    ul,ol { margin:12px 0 0; padding-left:20px; } li { margin:6px 0; }
+    .state { display:grid; grid-template-columns:1fr 1fr; gap:9px; margin-top:12px; }
+    .state div { padding:10px; border:1px solid #8e938f; background:#fffdf8; }
+    .yes { color:var(--green); font-weight:800; }.no { color:#a34535; font-weight:800; }
+    .flow { margin:12px 0 0; padding:13px; background:#17202b; color:#f7f3e9; font:13px/1.65 ui-monospace,SFMono-Regular,monospace; border-left:6px solid var(--orange); white-space:pre-wrap; }
+    footer { display:grid; grid-template-columns:repeat(4,1fr); border-top:2px solid #b8b2a5; }
+    footer div { padding:18px 22px; border-right:1px solid #b8b2a5; } footer div:last-child{border:0}
+    footer b { display:block; color:var(--orange); font:800 12px/1.2 ui-monospace,monospace; letter-spacing:.08em; text-transform:uppercase; margin-bottom:4px; }
+    @media(max-width:900px){main{width:100%;margin:0;border-width:6px}.board{grid-template-columns:1fr}.concept{min-height:620px;border-right:0;border-bottom:2px solid #b8b2a5}footer{grid-template-columns:1fr 1fr}header{flex-direction:column}}
+  </style>
+</head>
+<body><main>
+<header><div><h1>entropy c / concept 02</h1><p>A buildable home prototype first; a portable NYC office demonstration second. The enclosure is a design hypothesis. The system boundaries below are the plan.</p></div><div class="stamp">paper design · not built</div></header>
+<div class="board">
+  <div class="concept">
+    <img src="whiteboard-base.jpg" alt="Industrial-design sketch of a tabletop optical chamber">
+    <div class="label l1">Clear inward-only optical chamber<br><small>camera sees objects, not the room</small></div>
+    <div class="label l2">Quiet physical source<br><small>prisms / reflectors + one actuator first</small></div>
+    <div class="label l3">Controller in base<br><small>CoreS3 or CoreS3 SE candidate</small></div>
+    <div class="label l4">One enclosed power input<br><small>USB-C first; Ethernet/PoE optional later</small></div>
+  </div>
+  <aside>
+    <section><h2>TRUTH RIGHT NOW</h2><div class="state"><div><span class="yes">KNOWN</span><br>Portable, quiet, outbound-only, offline-tolerant.</div><div><span class="yes">KNOWN</span><br>Raw office imagery stays local by default.</div><div><span class="no">NOT CHOSEN</span><br>Camera, actuator, enclosure geometry, BOM.</div><div><span class="no">NOT CLAIMED</span><br>Production RNG or cryptographic entropy estimate.</div></div></section>
+    <section><h2>MINIMUM HOME BENCH</h2><ol><li>M5Stack controller + local status display.</li><li>One motion/light sensor and one quiet actuator.</li><li>Local sampling, timestamps, buffering, health checks.</li><li>Then add inward-facing camera and optical enclosure.</li></ol></section>
+    <section><h2>DATA PATH</h2><div class="flow">physical source + sensors + camera
+  → sample / timestamp / health checks
+  → frame commitment + difference metrics
+  → mix with device CSPRNG
+  → signed observation envelope
+  → outbound HTTPS
+  → Access-protected Worker
+  → Durable Object (sequence + replay + live state)
+  → Queue / Workflow → D1 metadata + sampled R2 evidence</div></section>
+    <section><h2>TRAFFIC, HONESTLY</h2><ul><li>Aggregate, approved traffic may drive light or actuator rhythm.</li><li>It is public context / an additional mixed input.</li><li>It is <strong>not</strong> treated as secret physical entropy.</li></ul></section>
+    <section><h2>FAIL-SAFE TESTS</h2><ul><li>Frozen/repeated frame</li><li>Covered camera</li><li>Stopped actuator</li><li>Implausibly stable sensor</li><li>Reboot and sequence reset</li><li>Network loss and buffered recovery</li></ul></section>
+  </aside>
+</div>
+<footer><div><b>Stage 1</b>Controller + sensor + actuator</div><div><b>Stage 2</b>Camera + optical source</div><div><b>Stage 3</b>Signed Cloudflare pipeline</div><div><b>Stage 4–5</b>Portable demo → office review</div></footer>
+</main></body></html>
